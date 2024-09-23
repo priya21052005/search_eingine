@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Engine</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts (for a sleeker look) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap">
+</head>
+
+<style>
+    body {
+        font-family: 'Playfair Display', serif;
+        background-color: #f4f7fc;
+        text-align: center;
+        margin-top: 10%;
+    }
+
+    .search-container {
+        margin: 0 auto;
+        width: 50%;
+        padding: 40px;
+        background-color: #fff;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 40px;
+    }
+
+    .heading {
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 3rem;
+    }
+
+    input[type="text"] {
+        width: 80%;
+        padding: 15px;
+        border: none;
+        border-radius: 40px;
+        background-color: #f2f2f2;
+        font-size: 1.2rem;
+        outline: none;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    button {
+        padding: 12px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 40px;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    #history-container {
+        margin-top: 30px;
+        text-align: left;
+    }
+
+    #search-history {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    #search-history li {
+        background-color: #fff;
+        padding: 10px;
+        margin-bottom: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .remove-btn {
+        padding: 5px 15px;
+        background-color: #ff5c5c;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 40px;
+    }
+
+    .remove-btn:hover {
+        background-color: #ff3c3c;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        color: #333;
+    }
+</style>
+
+<body>
+    <div class="heading">
+        <h1>SEARCH</h1>
+    </div>
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="How to be more confident?">
+        <button id="search-btn">Submit</button>
+
+        <div id="history-container">
+            <h3>Search History:</h3>
+            <ul id="search-history"></ul>
+            <button id="clear-history-btn">Clear History</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('search-btn').addEventListener('click', function () {
+            const searchInput = document.getElementById('search-input').value;
+            if (searchInput.trim() === '') return;
+
+            let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+
+            searchHistory.push(searchInput);
+
+            localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+
+            displaySearchHistory();
+            document.getElementById('search-input').value = '';
+        });
+
+        function displaySearchHistory() {
+            let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+            let historyContainer = document.getElementById('search-history');
+            historyContainer.innerHTML = '';
+
+            searchHistory.forEach((item, index) => {
+                let li = document.createElement('li');
+                li.textContent = item;
+
+                let removeBtn = document.createElement('button');
+                removeBtn.textContent = "Remove";
+                removeBtn.classList.add('remove-btn');
+
+                removeBtn.addEventListener('click', function () {
+                    removeHistoryItem(index);
+                });
+
+                li.appendChild(removeBtn);
+                historyContainer.appendChild(li);
+            });
+        }
+
+        function removeHistoryItem(index) {
+            let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+
+            searchHistory.splice(index, 1);
+
+            localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+            displaySearchHistory();
+        }
+
+        document.getElementById('clear-history-btn').addEventListener('click', function () {
+            localStorage.removeItem('searchHistory');
+            displaySearchHistory();
+        });
+
+        window.onload = function () {
+            displaySearchHistory();
+        };
+    </script>
+</body>
+
+</html>
